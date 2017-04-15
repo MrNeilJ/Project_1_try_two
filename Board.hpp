@@ -29,6 +29,10 @@ public:
 	void setAnt(int x, int y, char dir);
 
 	void move();
+
+    char getSpace();
+
+	void clearBoard();
 };
 
 

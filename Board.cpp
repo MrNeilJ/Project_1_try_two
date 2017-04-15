@@ -28,21 +28,21 @@ Board::Board() {
 }
 
 // Customizable Constructor if the user decides to build their own
-Board::Board(int length, int width) {
+Board::Board(int width, int length) {
 	boardLength = length;
 	boardWidth = width;
 
 	// Create the Dynamic 2D Array for the Board
-	boardPtr = new char*[boardWidth];
-	for (int i = 0; i < boardWidth; i++)
+	boardPtr = new char*[boardLength];
+	for (int i = 0; i < boardLength; i++)
 	{
-		boardPtr[i] = new char[boardLength];
+		boardPtr[i] = new char[boardWidth];
 	}
 
 	// Add Blank Spaces on the board
-	for (int i = 0; i < width; i++)
+	for (int i = 0; i < length; i++)
 	{
-		for (int j = 0; j < length; j++)
+		for (int j = 0; j < width; j++)
 		{
 			boardPtr[i][j] = ' ';
 		}
@@ -50,9 +50,9 @@ Board::Board(int length, int width) {
 }
 
 void Board::printBoard() {
-	for(int i = 0; i < boardWidth; i++)
+	for(int i = 0; i < boardLength; i++)
 	{
-		for (int j = 0; j < boardLength; j++)
+		for (int j = 0; j < boardWidth; j++)
 		{
 			std::cout << boardPtr[i][j];
 		}
@@ -81,12 +81,17 @@ void Board::move(){
 	{
 		if (oldSpace == ' ')
 		{
-			gameAnt.setX((oldX + 1) % boardLength);
+
+			gameAnt.setX((oldX + 1) % boardWidth);
 			gameAnt.setDirection('E');
 		}
-		else
-		{
-			gameAnt.setX((oldX - 1) % boardLength);
+		else {
+			if ((oldX - 1) < 0) {
+				gameAnt.setX(boardWidth - 1);
+			}
+			else {
+				gameAnt.setX(oldX - 1);
+			}
 			gameAnt.setDirection('W');
 		}
 	}
@@ -99,7 +104,12 @@ void Board::move(){
 		}
 		else
 		{
-			gameAnt.setY((oldY - 1) % boardLength);
+			if ((oldY - 1) < 0) {
+				gameAnt.setY(boardLength - 1);
+			}
+			else {
+				gameAnt.setY(oldY - 1);
+			}
 			gameAnt.setDirection('N');
 		}
 
@@ -108,12 +118,17 @@ void Board::move(){
 	{
 		if (oldSpace == ' ')
 		{
-			gameAnt.setX((oldX - 1) % boardLength);
+			if ((oldX - 1) < 0) {
+				gameAnt.setX(boardWidth - 1);
+			}
+			else {
+				gameAnt.setX(oldX - 1);
+			}
 			gameAnt.setDirection('W');
 		}
 		else
 		{
-			gameAnt.setX((oldX + 1) % boardLength);
+			gameAnt.setX((oldX + 1) % boardWidth);
 			gameAnt.setDirection('E');
 		}
 	}
@@ -121,7 +136,12 @@ void Board::move(){
 	{
 		if (oldSpace == ' ')
 		{
-			gameAnt.setY((oldY - 1) % boardLength);
+			if ((oldY - 1) < 0) {
+				gameAnt.setY(boardLength - 1);
+			}
+			else {
+				gameAnt.setY(oldY - 1);
+			}
 			gameAnt.setDirection('N');
 		}
 		else
@@ -143,7 +163,19 @@ void Board::move(){
 	else {
 		boardPtr[oldY][oldX] = ' ';
 	}
+}
 
-	
+void Board::clearBoard() {
+	// Delete dynamic memory
+	for (int i = 0; i < boardLength; i++)
+	{
+		delete [] boardPtr[i];
+	}
+
+	delete [] boardPtr;
+
+	// Set ptr to NULL to make sure it isn't accessed by accident and crash the system
+	boardPtr = NULL;
 
 }
+
